@@ -12,6 +12,7 @@ import (
 	"github.com/vibium/clicker/internal/bidi"
 	"github.com/vibium/clicker/internal/browser"
 	"github.com/vibium/clicker/internal/features"
+	"github.com/vibium/clicker/internal/mcp"
 	"github.com/vibium/clicker/internal/paths"
 	"github.com/vibium/clicker/internal/process"
 	"github.com/vibium/clicker/internal/proxy"
@@ -678,6 +679,50 @@ func main() {
 	}
 	serveCmd.Flags().IntP("port", "p", 9515, "Port to listen on")
 	rootCmd.AddCommand(serveCmd)
+
+	mcpCmd := &cobra.Command{
+		Use:   "mcp",
+		Short: "Start MCP server (stdio JSON-RPC for LLM agents)",
+		Long: `Start the Model Context Protocol (MCP) server.
+
+This runs a JSON-RPC 2.0 server over stdin/stdout, designed for integration
+with LLM agents like Claude Code.
+
+The server provides browser automation tools:
+  - browser_launch: Start a browser session
+  - browser_navigate: Go to a URL
+  - browser_click: Click an element
+  - browser_type: Type into an element
+  - browser_screenshot: Capture the page
+  - browser_find: Find element info
+  - browser_quit: Close the browser`,
+		Example: `  # Run directly (for testing)
+  clicker mcp
+
+  # Configure in Claude Code
+  claude mcp add vibium -- clicker mcp
+
+  # Enable screenshot saving to a directory
+  clicker mcp --screenshot-dir ./screenshots
+
+  # Test with echo
+  echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{}}}' | clicker mcp`,
+		Run: func(cmd *cobra.Command, args []string) {
+			screenshotDir, _ := cmd.Flags().GetString("screenshot-dir")
+
+			server := mcp.NewServer(version, mcp.ServerOptions{
+				ScreenshotDir: screenshotDir,
+			})
+			defer server.Close()
+
+			if err := server.Run(); err != nil {
+				fmt.Fprintf(os.Stderr, "MCP server error: %v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+	mcpCmd.Flags().String("screenshot-dir", "", "Directory for saving screenshots (if not set, file saving is disabled)")
+	rootCmd.AddCommand(mcpCmd)
 
 	rootCmd.Version = version
 	rootCmd.SetVersionTemplate("Clicker v{{.Version}}\n")

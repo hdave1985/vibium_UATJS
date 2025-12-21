@@ -675,7 +675,8 @@ browser_type:
   - text: string (required)
 
 browser_screenshot:
-  - (no params, returns base64 image)
+  - filename: string (optional, save to file if --screenshot-dir is set)
+  - Returns base64 image inline, or saves to file if filename provided
 
 browser_find:
   - selector: string (required)

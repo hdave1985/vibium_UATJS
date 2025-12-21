@@ -121,7 +121,7 @@ That's it. No `npm install` needed. The first run downloads everything automatic
 | `browser_find` | Find element by CSS selector |
 | `browser_click` | Click an element |
 | `browser_type` | Type text into an element |
-| `browser_screenshot` | Capture viewport as base64 PNG |
+| `browser_screenshot` | Capture viewport (base64 or save to file with `--screenshot-dir`) |
 | `browser_quit` | Close browser |
 
 ---

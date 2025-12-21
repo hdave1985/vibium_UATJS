@@ -1,4 +1,4 @@
-.PHONY: all build build-go build-js deps clean clean-bin clean-js clean-cache clean-all serve test test-cli test-js double-tap help
+.PHONY: all build build-go build-js deps clean clean-bin clean-js clean-cache clean-all serve test test-cli test-js test-mcp double-tap help
 
 # Default target
 all: build
@@ -23,7 +23,7 @@ serve: build-go
 	./clicker/bin/clicker serve
 
 # Run all tests
-test: build test-cli test-js
+test: build test-cli test-js test-mcp
 
 # Run CLI tests (tests the clicker binary directly)
 # Process tests run separately with --test-concurrency=1 to avoid interference
@@ -39,6 +39,11 @@ test-js: build
 	node --test --test-concurrency=1 tests/js/async-api.test.js tests/js/sync-api.test.js tests/js/auto-wait.test.js tests/js/headless-headed.test.js
 	@echo "━━━ JS Process Tests (sequential) ━━━"
 	node --test --test-concurrency=1 tests/js/process.test.js
+
+# Run MCP server tests (sequential - browser sessions)
+test-mcp: build-go
+	@echo "━━━ MCP Server Tests ━━━"
+	node --test --test-concurrency=1 tests/mcp/server.test.js
 
 # Kill zombie Chrome and chromedriver processes
 double-tap:
@@ -75,9 +80,10 @@ help:
 	@echo "  make build-js    - Build JS client"
 	@echo "  make deps        - Install npm dependencies"
 	@echo "  make serve       - Start proxy server on :9515"
-	@echo "  make test        - Run all tests (CLI + JS)"
+	@echo "  make test        - Run all tests (CLI + JS + MCP)"
 	@echo "  make test-cli    - Run CLI tests only"
 	@echo "  make test-js     - Run JS library tests only"
+	@echo "  make test-mcp    - Run MCP server tests only"
 	@echo "  make double-tap  - Kill zombie Chrome/chromedriver processes"
 	@echo "  make clean       - Clean binaries and JS dist"
 	@echo "  make clean-cache - Clean cached Chrome for Testing"

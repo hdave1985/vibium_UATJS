@@ -43,3 +43,6 @@ clicker/clicker
 
 # macOS
 .DS_Store
+
+# Test screenshots
+screenshots/
