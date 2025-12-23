@@ -7,7 +7,7 @@ import { getPlatform, getArch } from './platform';
  *
  * Search order:
  * 1. CLICKER_PATH environment variable
- * 2. Platform-specific npm package (@vibium/clicker-{platform}-{arch})
+ * 2. Platform-specific npm package (@vibium/{platform}-{arch})
  * 3. Local development paths (relative to cwd)
  */
 export function getClickerPath(): string {
@@ -19,7 +19,7 @@ export function getClickerPath(): string {
 
   const platform = getPlatform();
   const arch = getArch();
-  const packageName = `@vibium/clicker-${platform}-${arch}`;
+  const packageName = `@vibium/${platform}-${arch}`;
   const binaryName = platform === 'win32' ? 'clicker.exe' : 'clicker';
 
   // 2. Check platform-specific npm package

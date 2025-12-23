@@ -1,7 +1,8 @@
 {
-  "name": "vibium",
+  "name": "vibium-monorepo",
   "private": true,
   "workspaces": [
-    "clients/javascript"
+    "clients/javascript",
+    "packages/vibium"
   ]
 }

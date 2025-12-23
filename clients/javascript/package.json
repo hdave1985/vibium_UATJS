@@ -1,5 +1,5 @@
 {
-  "name": "vibium",
+  "name": "vibium-client",
   "version": "0.1.0",
   "description": "Browser automation for AI agents and humans",
   "main": "./dist/index.js",

@@ -1,4 +1,4 @@
-.PHONY: all build build-go build-js build-all-platforms package-platforms deps clean clean-bin clean-js clean-cache clean-all serve test test-cli test-js test-mcp double-tap help
+.PHONY: all build build-go build-js build-all-platforms package-platforms package-main deps clean clean-bin clean-js clean-cache clean-all serve test test-cli test-js test-mcp double-tap help
 
 # Default target
 all: build
@@ -36,6 +36,13 @@ package-platforms: build-all-platforms
 	cp clicker/bin/clicker-windows-amd64.exe packages/win32-x64/bin/clicker.exe
 	@echo "Done. Package binaries:"
 	@ls -lh packages/*/bin/clicker*
+
+# Build main vibium package (copy JS dist)
+package-main: build-js
+	@echo "Building main vibium package..."
+	mkdir -p packages/vibium/dist
+	cp -r clients/javascript/dist/* packages/vibium/dist/
+	@echo "Done. Main package ready at packages/vibium/"
 
 # Install npm dependencies (skip if node_modules exists)
 deps:
@@ -103,6 +110,7 @@ help:
 	@echo "  make build-js           - Build JS client"
 	@echo "  make build-all-platforms - Cross-compile clicker for all platforms"
 	@echo "  make package-platforms  - Copy binaries to npm platform packages"
+	@echo "  make package-main       - Build main vibium package"
 	@echo "  make deps               - Install npm dependencies"
 	@echo "  make serve              - Start proxy server on :9515"
 	@echo "  make test               - Run all tests (CLI + JS + MCP)"
